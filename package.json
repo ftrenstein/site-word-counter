@@ -1,0 +1,14 @@
+{
+  "name": "word-counter",
+  "version": "1.0.0",
+  "description": "Simple word and unique word counter for a URL",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start:site": "node index2.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12"
+  }
+}
