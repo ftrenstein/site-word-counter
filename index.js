@@ -1,7 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { load } from 'cheerio';
 
-const DEFAULT_URL = 'https://aristeksystems.com/portfolio/custom-b2c-b2b-lms/';
 const DEFAULT_SITEMAP = new URL('./site_map.txt', import.meta.url);
 const FIRST_URL_TEXT_FILE = new URL('./first_url_text.txt', import.meta.url);
 const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -150,10 +149,6 @@ async function main() {
         'utf8',
       );
       urls = parseUrlsFromSitemap(sitemapText);
-    }
-
-    if (urls.length === 0) {
-      urls = [DEFAULT_URL];
     }
 
     console.log('url\ttotal_words\tunique_words');
