@@ -164,8 +164,23 @@ async function main() {
         try {
           const text = await fetchPageText(url);
           if (index === 0) {
-            const normalizedText = extractWords(text).join(' ');
-            await writeFile(FIRST_URL_TEXT_FILE, normalizedText, 'utf8');
+            const words = extractWords(text);
+            const lines = [];
+            let line = '';
+            for (const word of words) {
+              if (line.length + word.length + 1 > 100 && line.length > 0) {
+                lines.push(line);
+                line = word;
+              } else {
+                line = line.length === 0 ? word : `${line} ${word}`;
+              }
+            }
+            if (line.length > 0) lines.push(line);
+            await writeFile(
+              FIRST_URL_TEXT_FILE,
+              lines.join('\n') + '\n',
+              'utf8',
+            );
           }
           return await countUrl(url, text);
         } catch (error) {
@@ -178,30 +193,10 @@ async function main() {
     let grandTotal = 0;
     let grandUnique = 0;
     const siteUniqueWords = new Set();
-    const lines = [];
     let errorCount = 0;
-
-    lines.push('Word Count Report');
-    lines.push(`Generated: ${new Date().toISOString()}`);
-    lines.push(`Total URLs: ${urls.length}`);
-    lines.push('');
-    lines.push('Methodology');
-    lines.push('  Included: visible body text (p, h1-h4, li, span, div, etc.)');
-    lines.push(
-      '  Excluded: script, style, noscript, hidden elements (hidden attr, aria-hidden, display:none)',
-    );
-    lines.push(
-      '  Words: lowercase letters only, digits and punctuation stripped',
-    );
-    lines.push('  Unique per page: distinct words per individual page');
-    lines.push('  Unique site-wide: distinct words across all pages combined');
-    lines.push('');
-    lines.push('url\ttotal_words\tunique_words');
 
     for (const result of results) {
       if (result.error) {
-        console.log(`${result.url}\tERROR\t${result.error}`);
-        lines.push(`${result.url}\tERROR\t${result.error}`);
         errorCount += 1;
         continue;
       }
@@ -210,20 +205,72 @@ async function main() {
       for (const word of result.uniqueWords) {
         siteUniqueWords.add(word);
       }
-      console.log(`${result.url}\t${result.total}\t${result.unique}`);
-      lines.push(`${result.url}\t${result.total}\t${result.unique}`);
     }
 
     const successCount = urls.length - errorCount;
+
+    // --- build pretty report ---
+    const fmt = (n) => n.toLocaleString('en-US');
+
+    // measure column widths
+    const urlColWidth = Math.max(3, ...results.map((r) => r.url.length));
+    const totalColWidth = Math.max(11, fmt(grandTotal).length);
+    const uniqueColWidth = Math.max(12, fmt(grandUnique).length);
+
+    const pad = (s, w) => String(s).padEnd(w);
+    const lpad = (s, w) => String(s).padStart(w);
+    const sep = `+-${'-'.repeat(urlColWidth)}-+-${'-'.repeat(totalColWidth)}-+-${'-'.repeat(uniqueColWidth)}-+`;
+    const header = `| ${pad('URL', urlColWidth)} | ${lpad('Total words', totalColWidth)} | ${lpad('Unique words', uniqueColWidth)} |`;
+
+    const lines = [];
+    lines.push('╔══════════════════════════════╗');
+    lines.push('║      Word Count Report       ║');
+    lines.push('╚══════════════════════════════╝');
+    lines.push(`Generated : ${new Date().toISOString()}`);
+    lines.push(`Total URLs: ${urls.length}`);
+    lines.push('');
+    lines.push('Methodology');
+    lines.push(
+      '  Included : visible body text (p, h1-h4, li, span, div, etc.)',
+    );
+    lines.push(
+      '  Excluded : script, style, noscript, hidden elements (hidden attr, aria-hidden, display:none)',
+    );
+    lines.push('  Normalised: digits and punctuation stripped, lowercased');
+    lines.push('  Unique per page  : distinct words on each individual page');
+    lines.push('  Unique site-wide : distinct words across all pages combined');
+    lines.push('');
+    lines.push(sep);
+    lines.push(header);
+    lines.push(sep);
+
+    for (const result of results) {
+      if (result.error) {
+        lines.push(
+          `| ${pad(result.url, urlColWidth)} | ${lpad('ERROR', totalColWidth)} | ${lpad(result.error.slice(0, uniqueColWidth), uniqueColWidth)} |`,
+        );
+        console.log(`${result.url}\tERROR\t${result.error}`);
+      } else {
+        lines.push(
+          `| ${pad(result.url, urlColWidth)} | ${lpad(fmt(result.total), totalColWidth)} | ${lpad(fmt(result.unique), uniqueColWidth)} |`,
+        );
+        console.log(`${result.url}\t${result.total}\t${result.unique}`);
+      }
+    }
+
+    lines.push(sep);
+
     console.log(
       `TOTAL\t${grandTotal}\tUnique per page (sum): ${grandUnique}\tUnique site-wide: ${siteUniqueWords.size}`,
     );
+
     lines.push('');
-    lines.push(`Processed URLs: ${successCount}`);
-    lines.push(`Failed URLs: ${errorCount}`);
-    lines.push(`Total words: ${grandTotal}`);
-    lines.push(`Unique per page (sum): ${grandUnique}`);
-    lines.push(`Unique words (site-wide): ${siteUniqueWords.size}`);
+    lines.push('Summary');
+    lines.push(`  Processed URLs       : ${fmt(successCount)}`);
+    lines.push(`  Failed URLs          : ${fmt(errorCount)}`);
+    lines.push(`  Total words          : ${fmt(grandTotal)}`);
+    lines.push(`  Unique per page (sum): ${fmt(grandUnique)}`);
+    lines.push(`  Unique site-wide     : ${fmt(siteUniqueWords.size)}`);
 
     await writeFile(RESULTS_FILE, lines.join('\n') + '\n', 'utf8');
     console.log(`Saved report to ${RESULTS_FILE.pathname}`);

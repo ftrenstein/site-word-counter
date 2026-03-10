@@ -1,0 +1,52 @@
+╔══════════════════════════════╗
+║      Word Count Report       ║
+╚══════════════════════════════╝
+Generated : 2026-03-10T14:31:04.832Z
+Total URLs: 28
+
+Methodology
+  Included : visible body text (p, h1-h4, li, span, div, etc.)
+  Excluded : script, style, noscript, hidden elements (hidden attr, aria-hidden, display:none)
+  Normalised: digits and punctuation stripped, lowercased
+  Unique per page  : distinct words on each individual page
+  Unique site-wide : distinct words across all pages combined
+
++----------------------------------------------------------------------------+-------------+--------------+
+| URL                                                                        | Total words | Unique words |
++----------------------------------------------------------------------------+-------------+--------------+
+| https://aristeksystems.com/industries/retail/                              |       1,926 |          722 |
+| https://aristeksystems.com/industries/educational-services/                |       2,126 |          806 |
+| https://aristeksystems.com/industries/logistics-software-development/      |       1,614 |          608 |
+| https://aristeksystems.com/industries/veterinary-software-development/     |       1,647 |          678 |
+| https://aristeksystems.com/industries/ecommerce/                           |       1,721 |          699 |
+| https://aristeksystems.com/industries/custom-lms-development/              |       2,228 |          783 |
+| https://aristeksystems.com/industries/k12-software-development-services/   |       3,452 |        1,072 |
+| https://aristeksystems.com/lms-sis-integration-solution/                   |       2,165 |          616 |
+| https://aristeksystems.com/corporate-training-software-development/        |       2,065 |          755 |
+| https://aristeksystems.com/industries/ai-for-education/                    |       2,397 |          879 |
+| https://aristeksystems.com/ai-in-manufacturing-services/                   |       2,096 |          806 |
+| https://aristeksystems.com/custom-ai-solution-for-logistics/               |       1,534 |          635 |
+| https://aristeksystems.com/ai-legal-tech-software-development/             |       1,467 |          622 |
+| https://aristeksystems.com/ai-software-development/                        |       2,334 |          836 |
+| https://aristeksystems.com/services/ai-consulting-services/                |       1,608 |          637 |
+| https://aristeksystems.com/ai-agent-development-services/                  |       1,804 |          708 |
+| https://aristeksystems.com/services/data-ai-consulting/                    |       2,625 |          900 |
+| https://aristeksystems.com/ai-integration-services/                        |       1,712 |          678 |
+| https://aristeksystems.com/ai-security-services/                           |       1,926 |          745 |
+| https://aristeksystems.com/ai-ds-focused-research-development-rd-services/ |       2,132 |          788 |
+| https://aristeksystems.com/about/                                          |       2,245 |          831 |
+| https://aristeksystems.com/terms-of-use/                                   |         966 |          398 |
+| https://aristeksystems.com/contact/                                        |         729 |          331 |
+| https://aristeksystems.com/                                                |       2,338 |          885 |
+| https://aristeksystems.com/services/custom-application-development/        |         996 |          398 |
+| https://aristeksystems.com/services/custom-mobile-application-development/ |       1,042 |          443 |
+| https://aristeksystems.com/devops-consulting-services-solutions/           |       1,702 |          696 |
+| https://aristeksystems.com/information-technology-audit-services/          |       1,508 |          628 |
++----------------------------------------------------------------------------+-------------+--------------+
+
+Summary
+  Processed URLs       : 28
+  Failed URLs          : 0
+  Total words          : 52,105
+  Unique per page (sum): 19,583
+  Unique site-wide     : 3,825
