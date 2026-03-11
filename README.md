@@ -1,24 +1,66 @@
 # Word Counter
 
-Counts total and unique words for a given URL.
+Counts total and unique words for one or more pages.
+
+## How It Works
+
+The script:
+
+1. Reads URLs from `site_map.txt` by default.
+2. Loads each page and extracts visible text from the HTML body.
+3. Excludes `script`, `style`, `noscript`, hidden elements, and elements with `display:none`.
+4. Normalizes words by converting them to lowercase and removing punctuation and digits.
+5. Calculates:
+   - total words per page
+   - unique words per page
+   - unique words across the whole set of pages
+
+## Prepare `site_map.txt`
+
+Put the page addresses into `site_map.txt`, one URL per line.
+
+Example:
+
+```txt
+https://example.com/
+https://example.com/about/
+https://example.com/contact/
+```
+
+Only lines starting with `http` are processed.
 
 ## Run
 
 1. Ensure Node.js 18+ is installed.
-2. Run:
-   - `npm start`
+2. Install dependencies:
 
-## Run (site-wide unique words)
+```bash
+npm install
+```
 
-Counts unique words across the entire site based on `site_map.txt`.
+3. Start the script:
 
-1. Run:
-   - `npm run start:site`
+```bash
+npm start
+```
 
-Optional: pass a URL or a sitemap file path.
+## Optional Run Modes
 
-- `npm run start:site https://example.com/page`
-- `npm run start:site ./site_map.txt`
+Run for a single URL:
 
-The URL is configured in `index.js` as `URL_TO_COUNT`.
-# site-word-counter
+```bash
+npm start -- https://example.com/page
+```
+
+Run with a custom sitemap file:
+
+```bash
+npm start -- ./site_map.txt
+```
+
+## Output Files
+
+The script generates:
+
+- `results_<timestamp>.txt` — formatted report with counts for every processed URL
+- `first_url_text.txt` — normalized text extracted from the first processed URL in a readable wrapped format

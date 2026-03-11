@@ -3,7 +3,8 @@ import { load } from 'cheerio';
 
 const DEFAULT_SITEMAP = new URL('./site_map.txt', import.meta.url);
 const FIRST_URL_TEXT_FILE = new URL('./first_url_text.txt', import.meta.url);
-const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+const now = new Date();
+const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${String(now.getHours()).padStart(2, '0')}-${String(now.getMinutes()).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`;
 const RESULTS_FILE = new URL(`./results_${timestamp}.txt`, import.meta.url);
 const CONCURRENCY = 4;
 const FETCH_TIMEOUT_MS = 15000;
@@ -30,13 +31,19 @@ function normalizeWord(word) {
 }
 
 function extractWords(text) {
-  return text.split(/\s+/g).map(normalizeWord).filter(Boolean);
+  return text
+    .replace(/[-–—]/g, ' ')
+    .split(/\s+/g)
+    .map(normalizeWord)
+    .filter(Boolean);
 }
 
 function extractBodyText($) {
   const $body = $('body').clone();
   $body.find('*').each((_, el) => {
-    $body.find(el).after(' ');
+    const $el = $(el);
+    $el.before(' ');
+    $el.after(' ');
   });
   return $body.text();
 }
@@ -221,7 +228,7 @@ async function main() {
     lines.push('╔══════════════════════════════╗');
     lines.push('║      Word Count Report       ║');
     lines.push('╚══════════════════════════════╝');
-    lines.push(`Generated : ${new Date().toISOString()}`);
+    lines.push(`Generated : ${new Date().toLocaleString()}`);
     lines.push(`Total URLs: ${urls.length}`);
     lines.push('');
     lines.push('Methodology');
